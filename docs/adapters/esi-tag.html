@@ -1,0 +1,25 @@
+<!--
+  ABC reference adapter — ESI tag (Akamai, Fastly, Varnish)
+
+  Paste this where the card should appear in your page template, typically
+  just before </body>. Your CDN resolves the <esi:include> at the edge:
+  it fetches the card, inlines the returned <article>, and caches it.
+
+  - FRAGMENT_ENDPOINT: the full URL your provider gives you (it already
+    carries their auth / placement params). $(HTTP_HOST)$(REQUEST_PATH) are
+    standard ESI variables your CDN fills in so the provider knows the page.
+  - onerror="continue": if the endpoint is slow or down, the page renders
+    normally without the card.
+
+  Enable ESI processing on your text/html responses, gated on the User-Agent
+  so the include resolves ONLY for AI agents — a human request is never
+  enriched and never calls the provider. Match against the published agent
+  list (schema/agents.json):
+    Akamai  — Property Manager → match on User-Agent (agent list) → behavior
+              "Edge Side Includes" → Enable
+    Fastly  — adapters/fastly.vcl  (gates beresp.do_esi on an agent-UA match)
+    Varnish — adapters/varnish.vcl (gates beresp.do_esi on an agent-UA match)
+-->
+<esi:include
+  src="https://provider.example/fragment?page_url=$(HTTP_HOST)$(REQUEST_PATH)"
+  onerror="continue" />

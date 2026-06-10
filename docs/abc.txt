@@ -1,0 +1,6 @@
+# abc.txt - Agentic Branded Content
+# Declares which providers may serve AI-agent branded content on this site.
+# Spec: https://brandedcontent.dev
+
+# provider_domain, account_id, relationship
+shftd2.com, p1, RESELLER

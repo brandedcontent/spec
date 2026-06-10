@@ -1,0 +1,85 @@
+openapi: 3.1.0
+info:
+  title: Agentic Branded Content — Fragment endpoint
+  version: "0.1"
+  description: >
+    Provider-neutral contract for an ABC fragment endpoint. A provider exposes
+    this endpoint; a publisher's edge (ESI tag, Worker, Lambda) calls it and
+    inlines the response. Only the behavior below is part of the spec — the
+    exact request parameters and brand-selection logic are provider-defined.
+  license:
+    name: Apache-2.0
+servers:
+  - url: https://provider.example
+    description: Placeholder — your provider gives you the real base URL.
+paths:
+  /fragment:
+    get:
+      summary: Return a brand card for a page. The edge calls this for AI-agent traffic only.
+      parameters:
+        - name: page_url
+          in: query
+          required: true
+          schema: { type: string, format: uri }
+          description: Full URL of the page being served, for contextual targeting.
+        - name: User-Agent
+          in: header
+          required: false
+          schema: { type: string }
+          description: >
+            Visitor User-Agent, optionally forwarded by the edge for the
+            provider's reporting (bot family / purpose). The edge has already
+            classified the request, so this is NOT used for classification and
+            is NOT part of the cache key.
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [html, json, both]
+            default: html
+          description: >
+            html (default) returns the card as text/html; json returns the
+            structured card object (card.schema.json); both returns a JSON
+            envelope { card, html } where html is the rendered card.
+      responses:
+        "200":
+          description: A brand is eligible for the page — the card.
+          headers:
+            Cache-Control:
+              schema: { type: string }
+              description: >
+                Cacheable by URL, e.g. public, s-maxage=120,
+                stale-while-revalidate=240. No Vary: User-Agent — the edge
+                classifies, so every request here is already an agent.
+          content:
+            text/html:
+              schema:
+                type: string
+                description: One <article role="complementary" class="abc-card"> block.
+            application/json:
+              schema:
+                oneOf:
+                  # format=json — the card object
+                  - $ref: "card.schema.json"
+                  # format=both — the card plus its rendered HTML
+                  - type: object
+                    additionalProperties: false
+                    required: [card, html]
+                    properties:
+                      card:
+                        $ref: "card.schema.json"
+                      html:
+                        type: string
+                        description: >
+                          Rendered <article class="abc-card"> HTML, ready to inline.
+        "204":
+          description: No eligible brand for this page (no-fill). Empty body.
+        "400":
+          description: Missing or invalid required parameters.
+        "401":
+          description: Missing or invalid provider credentials.
+        "403":
+          description: Caller not authorized for this placement.
+        "429":
+          description: Rate limit exceeded.

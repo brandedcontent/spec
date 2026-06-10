@@ -1,0 +1,57 @@
+site_name: Agentic Branded Content
+site_description: A spec for publishers to serve AI agents sponsored branded content matched to the page — and get paid for bot traffic.
+site_url: https://brandedcontent.dev
+copyright: Agentic Branded Content · Spec v0.1 · Apache-2.0
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - content.code.copy
+    - navigation.instant
+    - navigation.top
+    - navigation.sections
+
+markdown_extensions:
+  - admonition
+  - tables
+  - attr_list
+  - pymdownx.highlight
+  - pymdownx.snippets:
+      base_path: [docs]
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/brandedcontent
+      name: github.com/brandedcontent
+    - icon: fontawesome/solid/envelope
+      link: mailto:contact@brandedcontent.dev
+      name: contact@brandedcontent.dev
+
+nav:
+  - Home: index.md
+  - Integration: integration.md
+  - Agents: agents.md
+  - Get started: getting-started.md

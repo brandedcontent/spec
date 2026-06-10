@@ -1,0 +1,9 @@
+.venv/
+site/
+__pycache__/
+.DS_Store
+.wrangler/
+
+# Local agent / tooling state
+.claude/
+.agents/
