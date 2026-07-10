@@ -18,13 +18,19 @@ const AGENT_UA =
 
 export default {
   async fetch(request, env) {
-    const res = await fetch(request); // your origin
-    const contentType = res.headers.get("content-type") || "";
-    if (!contentType.includes("text/html")) return res;
-
     // Classify at the edge: only AI agents get a card request.
     const ua = request.headers.get("User-Agent") || "";
-    if (!AGENT_UA.test(ua)) return res;
+    if (!AGENT_UA.test(ua)) return fetch(request); // humans: origin untouched
+
+    // Agent requests ask the origin for UNCOMPRESSED HTML: HTMLRewriter cannot
+    // parse a gzip/br body — it would pass through unchanged and the card
+    // would be silently dropped. "identity" (not a deleted header — some
+    // origins still compress then) forces it; humans above stay compressed.
+    const originReq = new Request(request);
+    originReq.headers.set("Accept-Encoding", "identity");
+    const res = await fetch(originReq); // your origin
+    const contentType = res.headers.get("content-type") || "";
+    if (!contentType.includes("text/html")) return res;
 
     // Build the card request: provider URL + this page. The UA is
     // forwarded for the provider's reporting only (it does not affect the card).
