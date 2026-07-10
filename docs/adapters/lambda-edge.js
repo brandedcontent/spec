@@ -50,6 +50,13 @@ exports.handler = async (event) => {
   const ct = (response.headers["content-type"] || [{}])[0].value || "";
   if (!ct.includes("text/html") || !response.body) return response;
 
+  // A compressed body cannot be string-spliced: "</body>" would never match
+  // and appending raw HTML to gzip bytes corrupts the page. Leave it
+  // untouched — disable origin compression (or a CloudFront "no compress"
+  // cache policy) on HTML for this trigger to activate.
+  const enc = (response.headers["content-encoding"] || [{}])[0].value || "";
+  if (enc && enc !== "identity") return response;
+
   const ua = (request.headers["user-agent"] || [{}])[0].value || "";
   // Classify at the edge: only AI agents get a card request. The UA is then
   // forwarded for the provider's reporting only (it does not affect the card).
