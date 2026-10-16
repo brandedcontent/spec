@@ -1,7 +1,7 @@
 site_name: Agentic Branded Content
 site_description: A spec for publishers to serve AI agents sponsored branded content matched to the page — and get paid for bot traffic.
 site_url: https://brandedcontent.dev
-copyright: Agentic Branded Content · Spec v0.1 · Apache-2.0
+copyright: Agentic Branded Content · Spec v0.2 · Apache-2.0
 
 theme:
   name: material
