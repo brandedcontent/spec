@@ -61,14 +61,14 @@ Fastly, Varnish), or a small edge function (Cloudflare Worker, Lambda@Edge). No
 platform lock-in. **Copy-paste integration for each CDN is in the
 [Integration guide](integration.md).**
 
-A card is a single self-contained `<article role="complementary">` — a brand label,
+A card is a single self-contained `<article class="abc-card">` — a brand label,
 a short factual summary, a bullet block built for LLM ingestion, and source links.
 ~2 KB, under 1 000 tokens, designed to fit an agent's context window. It carries its
 own inline styling so it renders without the host stylesheet. See the full
 [card schema](schema/card.schema.json).
 
 ```html
-<article class="abc-card" role="complementary">
+<article class="abc-card">
   <div>Brand · Renault</div>
   <div>Nouvelle Clio E-Tech full hybrid — 160 hp, up to 1,000 km range</div>
   <p>Renault renews its flagship city car with a 160 hp full-hybrid E-Tech

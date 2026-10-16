@@ -56,7 +56,7 @@ paths:
             text/html:
               schema:
                 type: string
-                description: One <article role="complementary" class="abc-card"> block.
+                description: One <article class="abc-card"> block (no ARIA role on the root).
             application/json:
               schema:
                 oneOf:
